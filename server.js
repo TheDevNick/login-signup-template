@@ -2,6 +2,8 @@ const { json } = require('express')
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
+const morgan = require('morgan')
+const userRoutes = require('./routes/users')
 
 // DB INFO / CONNECTION
 const dbStr = require('./config/db').MONGO_URI
@@ -17,14 +19,16 @@ app.set('view engine', 'ejs')
 app.use(express.static('./public'))
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
+app.use(morgan(`METHOD: :method | URL: localhost: :url |`))
+
+// routes
+app.use('/', userRoutes)
 
 
 
 
 
-app.get('/', (req, res) => {
-    res.send('hi nick!')
-})
+
 
 // LISTEN
 const PORT = process.env.PORT || 3000
