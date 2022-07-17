@@ -57,13 +57,23 @@ router.post('/signup', (req, res) => {
                         email,
                         password
                     })
-                    newUser.save()
-                    .then(() => {
-                        console.log('=========== NEW USER CREATED ============ ');
-                        console.log(newUser);
-                        console.log('=========== NEW USER CREATED ============ ');
-                        res.send('welcome')
-                    })
+                    // hash password
+                    bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
+                        if (err) throw err
+                        // set password to hash
+                        newUser.password = hash
+                        // save user
+                        newUser.save()
+                        .then(() => {
+                            console.log('=========== NEW USER CREATED ============ ');
+                            console.log(newUser);
+                            console.log('=========== NEW USER CREATED ============ ');
+                            res.send('welcome')
+                        })
+                        .catch(err => console.log(err))
+                    }))
+
+
                 }
             })
     }
